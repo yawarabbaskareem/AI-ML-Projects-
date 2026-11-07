@@ -1,0 +1,320 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e809deb9-bea3-42e7-8632-d0459be2c2b2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0bcaa786-e23f-4ac3-93f3-7adc57bbd2d3",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -448,
+        -128
+      ],
+      "webhookId": "e809deb9-bea3-42e7-8632-d0459be2c2b2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}",
+        "options": {
+          "systemMessage": "=You are the Internship Application Tracker Agent. Your job is to extract job application details (Company, Role, Status, Date, Link) from user messages and save them using the Google Sheets tool. Today's date is {{ $now.toFormat(\"yyyy-MM-dd\") }}. Use it as the Date Applied when the user says \"today\" or gives no date, and always write dates in yyyy-MM-dd format.\"If the user provides an HR email address, you MUST use the Gmail tool to send a professional follow-up email. Do not skip this if an email address is present in the input.\" IMPORTANT: Call only ONE tool per step, never multiple tools at the same time. First call the Google Sheets tool and wait for its result; only then call the Gmail tool in a separate step.\"Always sign the email with my name, YAWAR ABBAS.\""
+        }
+      },
+      "id": "42f2250f-08b9-417c-84c0-48afa3faae1c",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -176,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "id": "d060cf30-0ccc-4eff-b28e-ddce7ed0c028",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -208,
+        80
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "\"Use this tool to append a new job application row with Company, Role, Date Applied, Status, Job Link, and Notes.\"",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1sFRwpNkJ-1EyjDwdkCeRC86t7gdTbzn3zqM7eiqYgt4",
+          "mode": "list",
+          "cachedResultName": "Internship Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sFRwpNkJ-1EyjDwdkCeRC86t7gdTbzn3zqM7eiqYgt4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sFRwpNkJ-1EyjDwdkCeRC86t7gdTbzn3zqM7eiqYgt4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Company', ``, 'string') }}",
+            "Role": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Role', ``, 'string') }}",
+            "Date Applied": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Date_Applied', ``, 'string') }}",
+            "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+            "Job Link": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Job_Link', ``, 'string') }}",
+            "Notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Notes', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date Applied",
+              "displayName": "Date Applied",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Job Link",
+              "displayName": "Job Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "57737165-d27d-4910-bad8-e8d6dff2a680",
+      "name": "Append row in sheet in Google Sheets",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        64
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IlqwnkZ0MGoiY0CB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false,
+          "ccList": "ayawar153@gmail.com"
+        }
+      },
+      "id": "27a5e32e-5fc7-4571-8064-b99afab29c4d",
+      "name": "Send a message in Gmail",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        96
+      ],
+      "webhookId": "50df92c3-298e-4018-88c4-f8b4c10f3f33",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sYMbceWCLthkZtC3",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "482659fa-23f0-402c-a62f-994a7d9885cf",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        160,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sFRwpNkJ-1EyjDwdkCeRC86t7gdTbzn3zqM7eiqYgt4:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleSheetsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"requests\":[{\"autoResizeDimensions\":{\"dimensions\":{\"sheetId\":0,\"dimension\":\"COLUMNS\",\"startIndex\":0,\"endIndex\":6}}}]}",
+        "options": {}
+      },
+      "id": "77f430cb-8c32-4eba-adf3-eca04ab67510",
+      "name": "Auto-resize Sheet Columns",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        464,
+        -128
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IlqwnkZ0MGoiY0CB",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Auto-resize Sheet Columns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d9d0d27a-4bad-4106-9c07-d96e896debb7",
+  "meta": {
+    "instanceId": "10568f31b1fd4852492d603cb0a4348000ddab156d4569329ef3683baf720445"
+  },
+  "nodeGroups": [],
+  "id": "K3f2EABdEaxMKGzc",
+  "tags": []
+}
